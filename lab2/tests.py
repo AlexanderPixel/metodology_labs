@@ -29,7 +29,7 @@ class TestLinkedList(unittest.TestCase):
         self.assertEqual(ls.get(1), '4')
 
         with self.assertRaises(IndexError):
-            ls.insert(ls.getLength(), 'Invalid Value')
+            ls.insert(ls.get_length(), 'Invalid Value')
 
     def test_length(self):
         ls = list.LinkedList()
@@ -38,7 +38,7 @@ class TestLinkedList(unittest.TestCase):
         ls.append('2')
         ls.append('3')
 
-        self.assertEqual(ls.getLength(), 3)
+        self.assertEqual(ls.get_length(), 3)
 
     def test_get(self):
         #arrange
@@ -54,7 +54,7 @@ class TestLinkedList(unittest.TestCase):
         self.assertEqual(value, '1')
 
         with self.assertRaises(IndexError):
-            ls.get(ls.getLength() + 1)
+            ls.get(ls.get_length() + 1)
 
     def test_clear(self):
 
@@ -66,7 +66,7 @@ class TestLinkedList(unittest.TestCase):
         
         ls.clear()
 
-        self.assertEqual(ls.getLength(), 0)
+        self.assertEqual(ls.get_length(), 0)
 
     def test_delete(self):
         ls = list.LinkedList()
@@ -77,11 +77,11 @@ class TestLinkedList(unittest.TestCase):
 
         deleted = ls.delete(0)
 
-        self.assertEqual(ls.getLength(), 2)
+        self.assertEqual(ls.get_length(), 2)
         self.assertEqual(deleted, '1')
 
         with self.assertRaises(IndexError):
-            ls.delete(ls.getLength() + 1)
+            ls.delete(ls.get_length() + 1)
 
     def test_delete_all(self):
         ls = list.LinkedList()
@@ -90,9 +90,9 @@ class TestLinkedList(unittest.TestCase):
         ls.append('3')
         ls.append('3')
 
-        ls.deleteAll('3')
+        ls.delete_all('3')
 
-        self.assertEqual(ls.getLength(), 1)
+        self.assertEqual(ls.get_length(), 1)
 
     def test_find_first(self):
         ls = list.LinkedList()
@@ -101,7 +101,7 @@ class TestLinkedList(unittest.TestCase):
         ls.append('1')
         ls.append('3')
 
-        first = ls.findFirst('3')
+        first = ls.find_first('3')
 
         self.assertEqual(first, 0)
 
@@ -112,7 +112,7 @@ class TestLinkedList(unittest.TestCase):
         ls.append('1')
         ls.append('3')
 
-        last = ls.findLast('3')
+        last = ls.find_last('3')
 
         self.assertEqual(last, 2)
 
@@ -159,7 +159,7 @@ class TestLinkedList(unittest.TestCase):
         self.assertEqual(node.element, '4')
 
         with self.assertRaises(IndexError):
-            ls._get_node(ls.getLength() + 2)
+            ls._get_node(ls.get_length() + 2)
 
 
 if __name__ == '__main__':

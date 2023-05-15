@@ -1,170 +1,78 @@
-class LinkedList:
-    class Node:
-        def __init__(self, element: str, next_node):
-            self.element = element
-            self.next_node = next_node
+class Node:
+    def __init__(self, element):
+        self.element = element
 
+class LinkedList(list):
     def __init__(self):
-        self.tail = None
-        self.length = 0
+        pass
 
     def append(self, element: str) -> None:
-        if not self.tail:
-            self.tail = self.Node(element, None)
-            self.tail.next_node = self.tail
-            self.length = 1
-            return None
+        super().append(Node(element))
 
-        new_node = self.Node(element, self.tail.next_node)
-
-        self.tail.next_node = new_node
-        self.tail = new_node
-
-        self.length += 1
-    
-    def print(self):
-        node = self.tail
-
-        if not node:
+    def print(self) -> None:
+        if self.get_length == 0:
             print('Nothing to print')
-            return None
+        else:
+            for node in self:
+                print(node.element)
+    
 
-        for i in range(self.length):
-            node = node.next_node
-            print(node.element)
+    def get_length(self) -> int:
+        return len(self)
+
+    def find_first(self, item:str) -> int:
+        for i in range(len(self)):
+            if self[i].element == item:
+                return i
+
+    def find_last(self, item: str) -> int:
+        last_index = -1
+        for i in range(len(self)):
+            if self[i].element == item:
+                last_index = i
+        return last_index
 
     def insert(self, index: int, element: str) -> None:
-        if (index >= self.length or index < 0):
-            raise IndexError  
-            
-        if(index == 0):
-            previous_node = self.tail
-        else:
-            previous_node = self._get_node(index - 1)
+        if (index >= len(self) or index < 0):
+            raise IndexError
+        super().insert(index, Node(element))
 
-        node = previous_node.next_node
+    def get(self, index:int) -> str:
+        if (index >= len(self) or index < 0):
+            raise IndexError
+        return self[index].element
 
-        new_node = self.Node(element, next_node=node)
+    def clone(self) -> list:
+        new_list = LinkedList()
+        for i in range(len(self)):
+            new_list.append(self.get(i))
+        return new_list
 
-        previous_node.next_node = new_node
-        
-        self.length += 1
+    def reverse(self) -> None:
+        super().reverse()
 
-    def getLength(self):
-        return self.length
+    def extend(self, lst:list) -> None:
+        super().extend(lst)
 
-    def get(self, index: int) -> str:
-        if (index >= self.length or index < 0):
-            raise IndexError 
-        node = self._get_node(index)
-        return node.element
-    
-    def delete(self, index: int):
-        if (index >= self.length or index < 0):
-            raise IndexError 
-
-        if self.length <= 1:
-            self.length = 0
-            value = self.tail.element
-            self.tail = None
-            return value
-
-        if index == 0:
-            previous = self.tail
-        else:
-            previous = self._get_node(index - 1)
-        
-        current = previous.next_node
-        next = current.next_node
-
-        value = current.element
-
-        previous.next_node = next
-
-        if current == self.tail:
-            self.tail == next
-
-        self.length -= 1
-        return value
-
-    def deleteAll(self, element):
+    def delete_all(self, value:str) -> None:
         i = 0
-        while i < self.length:
-            value = self.get(i)
-            if value == element:
+        while i < len(self):
+            if self[i].element == value:
                 self.delete(i)
                 i -= 1
             i += 1
 
-    def clone(self):
-        new_list = LinkedList()
-        for i in range(self.length):
-            new_list.append(self.get(i))
-        return new_list
+    def delete(self, index: int) -> None:
+        if (index >= len(self) or index < 0):
+            raise IndexError
+        item = self[index]
+        del self[index]
+        return item.element
 
-    def reverse(self):
-        if not self.tail or self.length == 1:
-            return None
-
-        new_tail = self.tail.next_node
-
-        previous_node = self.tail
-        current_node = previous_node.next_node
-        next_node = current_node.next_node
-        
-        for i in range(self.length):
-            current_node.next_node = previous_node
-
-            previous_node = current_node
-            current_node = next_node
-            next_node = current_node.next_node
-
-        self.tail = new_tail
-
-    def findFirst(self, value):
-        node = self.tail.next_node
-        index = 0
-
-        while index != self.length:
-            if node.element == value:
-                return index
-        
-            index += 1
-            node = node.next_node
-        
-        return -1
-
-    def findLast(self, value):
-        node = self.tail.next_node
-        index = 0
-        last_index = -1
-        while index != self.length:
-            if node.element == value:
-                last_index = index
-        
-            index += 1
-            node = node.next_node
-        
-        return last_index
+    def clear(self) -> None:
+        super().clear()
 
     def _get_node(self, index):
-        if (index >= self.length or index < 0):
-            raise IndexError      
-        node = self.tail
-
-        for i in range(index + 1):
-            node = node.next_node
-        return node
-    
-    def clear(self):
-        self.tail.next_node = None
-        self.tail = None
-        self.length = 0
-
-    def extend(self, lst):
-        node = lst.tail.next_node
-        while node.next_node != lst.tail.next_node:
-            self.append(node.element)
-            node = node.next_node
-        self.append(lst.tail.element)
-        return None
+        if (index >= len(self) or index < 0):
+            raise IndexError
+        return self[index]

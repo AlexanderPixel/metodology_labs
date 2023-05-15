@@ -59,7 +59,7 @@ class LinkedList(list):
         while i < len(self):
             if self[i].element == value:
                 self.delete(i)
-                i -= 1
+                #i -= 1
             i += 1
 
     def delete(self, index: int) -> None:

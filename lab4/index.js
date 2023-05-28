@@ -4,6 +4,13 @@ const tasksFile = './tasks.json';
 
 let tasks = [];
 
+if (fs.existsSync(tasksFile)) {
+    const tasksJson = fs.readFileSync(tasksFile);
+    try {
+        tasks = JSON.parse(tasksJson);
+    } catch (ex) { }
+}
+
 program.description('An application to track tasks');
 
 program
@@ -17,6 +24,13 @@ program
     };
     tasks.push(task);
     fs.writeFileSync(tasksFile, JSON.stringify(tasks));
+  });
+
+  program
+  .command('list')
+  .description('List all tasks')
+  .action(() => {
+    console.log(tasks);
   });
 
 program.parse(process.argv);

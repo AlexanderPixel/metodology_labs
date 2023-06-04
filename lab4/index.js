@@ -39,7 +39,7 @@ program
   .command('list')
   .description('List all tasks')
   .action(() => {
-    console.log(tasks);
+    console.table(tasks);
   });
 
 program

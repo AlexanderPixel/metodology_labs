@@ -1,7 +1,3 @@
-Sure, here is an example of a README file for this task management CLI application:
-
----
-
 # Task Management CLI Application
 
 This is a command-line interface (CLI) application written in JavaScript for managing tasks. It uses the `commander` module for parsing command-line arguments and the `fs` module for reading and writing to the filesystem.

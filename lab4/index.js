@@ -2,8 +2,24 @@ const { program } = require('commander');
 const fs = require('fs');
 const tasksFile = './tasks.json';
 
-function formatError(str) {
-  return `\x1b[31m${str}\x1b[0m`;
+const FEEDBACKS = {
+  ERROR: '\x1b[31m%s\x1b[0m',
+  SUCCESS: '\x1b[32m%s\x1b[0m',
+};
+
+const formatMessage = (str, color) => {
+  const message = color.replace('%s', str);
+  return message;
+}
+
+const handleTaskNotFound = (id) => {
+  const error = formatMessage(`Task with id ${id} not found.`, FEEDBACKS.ERROR);
+  console.log(error);
+}
+
+const handleSuccessfulAction = (str) => {
+  const message = formatMessage(str, FEEDBACKS.SUCCESS);
+  console.log(message);
 }
 
 let tasks = [];
@@ -11,8 +27,10 @@ let tasks = [];
 if (fs.existsSync(tasksFile)) {
     const tasksJson = fs.readFileSync(tasksFile);
     try {
-        tasks = JSON.parse(tasksJson);
-    } catch (ex) { }
+      tasks = JSON.parse(tasksJson);
+    } catch (ex) { 
+      console.error(`Error parsing tasks file: ${ex}`);
+    }
 }
 
 program.description('An application to track tasks');
@@ -33,13 +51,15 @@ program
     };
     tasks.push(task);
     fs.writeFileSync(tasksFile, JSON.stringify(tasks));
+
+    handleSuccessfulAction(`Task "${task.title}" was successfully added.`);
   });
 
 program
   .command('list')
   .description('List all tasks')
   .action(() => {
-    console.log(tasks);
+    console.table(tasks);
   });
 
 program
@@ -50,9 +70,10 @@ program
     if (index !== -1) {
       tasks.splice(index, 1);
       fs.writeFileSync(tasksFile, JSON.stringify(tasks));
+
+      handleSuccessfulAction(`Task with id ${id} was successfully deleted.`);
     } else {
-      const error = formatError(`Task with id ${id} not found`);
-      program.error(error);
+      handleTaskNotFound(id);
     }
   });
 
@@ -65,6 +86,10 @@ program
       task.completed = true;
       task.completedDate = new Date();
       fs.writeFileSync(tasksFile, JSON.stringify(tasks));
+
+      handleSuccessfulAction(`Task with id ${id} was successfully completed.`);
+    } else {
+      handleTaskNotFound(id);
     }
   });
 
@@ -79,7 +104,11 @@ program
       if (options.description) task.description = options.description;
       if (options.deadline) task.deadline = new Date(options.deadline);
       fs.writeFileSync(tasksFile, JSON.stringify(tasks));
-    } 
+
+      handleSuccessfulAction(`Task with id ${id} was successfully edited.`);
+    } else {
+      handleTaskNotFound(id);
+    }
   });
 
 program.parse(process.argv);

@@ -27,8 +27,10 @@ let tasks = [];
 if (fs.existsSync(tasksFile)) {
     const tasksJson = fs.readFileSync(tasksFile);
     try {
-        tasks = JSON.parse(tasksJson);
-    } catch (ex) { }
+      tasks = JSON.parse(tasksJson);
+    } catch (ex) { 
+      console.error(`Error parsing tasks file: ${ex}`);
+    }
 }
 
 program.description('An application to track tasks');

@@ -2,12 +2,24 @@ const { program } = require('commander');
 const fs = require('fs');
 const tasksFile = './tasks.json';
 
-function formatError(str) {
-  return `\x1b[31m${str}\x1b[0m`;
+const FEEDBACKS = {
+  ERROR: '\x1b[31m%s\x1b[0m',
+  SUCCESS: '\x1b[32m%s\x1b[0m',
+};
+
+const formatMessage = (str, color) => {
+  const message = color.replace('%s', str);
+  return message;
 }
 
-function formatFeedback(str) {
-  return `\x1b[32m${str}\x1b[0m`;
+const handleTaskNotFound = (id) => {
+  const error = formatMessage(`Task with id ${id} not found.`, FEEDBACKS.ERROR);
+  console.log(error);
+}
+
+const handleSuccessfulAction = (str) => {
+  const message = formatMessage(str, FEEDBACKS.SUCCESS);
+  console.log(message);
 }
 
 let tasks = [];
@@ -37,8 +49,8 @@ program
     };
     tasks.push(task);
     fs.writeFileSync(tasksFile, JSON.stringify(tasks));
-    const feedback = formatFeedback(`Task "${task.title}" was successfully added.`);
-    console.log(feedback);
+
+    handleSuccessfulAction(`Task "${task.title}" was successfully added.`);
   });
 
 program
@@ -56,11 +68,10 @@ program
     if (index !== -1) {
       tasks.splice(index, 1);
       fs.writeFileSync(tasksFile, JSON.stringify(tasks));
-      const feedback = formatFeedback(`Task with id ${id} was successfully deleted.`);
-      console.log(feedback);
+
+      handleSuccessfulAction(`Task with id ${id} was successfully deleted.`);
     } else {
-      const error = formatError(`Task with id ${id} not found`);
-      program.error(error);
+      handleTaskNotFound(id);
     }
   });
 
@@ -73,8 +84,10 @@ program
       task.completed = true;
       task.completedDate = new Date();
       fs.writeFileSync(tasksFile, JSON.stringify(tasks));
-      const feedback = formatFeedback(`Task with id ${id} was successfully completed.`);
-      console.log(feedback);
+
+      handleSuccessfulAction(`Task with id ${id} was successfully completed.`);
+    } else {
+      handleTaskNotFound(id);
     }
   });
 
@@ -89,9 +102,11 @@ program
       if (options.description) task.description = options.description;
       if (options.deadline) task.deadline = new Date(options.deadline);
       fs.writeFileSync(tasksFile, JSON.stringify(tasks));
-      const feedback = formatFeedback(`Task with id ${id} was successfully edited.`);
-      console.log(feedback);
-    } 
+
+      handleSuccessfulAction(`Task with id ${id} was successfully edited.`);
+    } else {
+      handleTaskNotFound(id);
+    }
   });
 
 program.parse(process.argv);

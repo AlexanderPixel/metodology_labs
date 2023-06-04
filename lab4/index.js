@@ -6,6 +6,10 @@ function formatError(str) {
   return `\x1b[31m${str}\x1b[0m`;
 }
 
+function formatFeedback(str) {
+  return `\x1b[32m${str}\x1b[0m`;
+}
+
 let tasks = [];
 
 if (fs.existsSync(tasksFile)) {
@@ -33,6 +37,8 @@ program
     };
     tasks.push(task);
     fs.writeFileSync(tasksFile, JSON.stringify(tasks));
+    const feedback = formatFeedback(`Task "${task.title}" was successfully added.`);
+    console.log(feedback);
   });
 
 program
@@ -50,6 +56,8 @@ program
     if (index !== -1) {
       tasks.splice(index, 1);
       fs.writeFileSync(tasksFile, JSON.stringify(tasks));
+      const feedback = formatFeedback(`Task with id ${id} was successfully deleted.`);
+      console.log(feedback);
     } else {
       const error = formatError(`Task with id ${id} not found`);
       program.error(error);
@@ -65,6 +73,8 @@ program
       task.completed = true;
       task.completedDate = new Date();
       fs.writeFileSync(tasksFile, JSON.stringify(tasks));
+      const feedback = formatFeedback(`Task with id ${id} was successfully completed.`);
+      console.log(feedback);
     }
   });
 
@@ -79,6 +89,8 @@ program
       if (options.description) task.description = options.description;
       if (options.deadline) task.deadline = new Date(options.deadline);
       fs.writeFileSync(tasksFile, JSON.stringify(tasks));
+      const feedback = formatFeedback(`Task with id ${id} was successfully edited.`);
+      console.log(feedback);
     } 
   });
 

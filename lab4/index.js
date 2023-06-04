@@ -26,6 +26,8 @@ program
       id: tasks.length + 1,
       title,
       description: options.description || '',
+      completed: false,
+      completedDate: null,
     };
     tasks.push(task);
     fs.writeFileSync(tasksFile, JSON.stringify(tasks));
@@ -50,6 +52,18 @@ program
       const error = formatError(`Task with id ${id} not found`);
       program.error(error);
     }
+  });
+
+program
+  .command('complete <id>')
+  .description('Complete a task')
+  .action((id) => {
+    const task = tasks.find((t) => t.id === parseInt(id));
+    if (task) {
+      task.completed = true;
+      task.completedDate = new Date();
+    }
+    fs.writeFileSync(tasksFile, JSON.stringify(tasks));
   });
 
 program.parse(process.argv);
